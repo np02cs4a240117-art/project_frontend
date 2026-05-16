@@ -2,11 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { transactionService } from '../services/transaction.service';
 import { paymentPlanService } from '../services/paymentplan.service';
 import { Search } from 'lucide-react';
-import { useNotification } from '../context/NotificationContext';
 import SuccessModal from './SuccessModal';
 
 export default function TransactionForm({ type = 'SEND', onSuccess, onCancel, initialData = {} }) {
-  const { showNotification } = useNotification();
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [formData, setFormData] = useState({
@@ -66,14 +64,15 @@ export default function TransactionForm({ type = 'SEND', onSuccess, onCancel, in
       }
 
       await transactionService.createTransaction(payload);
-
-      if (type === 'SEND' && formData.payment_plan_id) {
-        try {
-          await paymentPlanService.markCompleted(Number(formData.payment_plan_id));
-        } catch {
-          showNotification('Money was sent, but the selected plan could not be marked completed automatically.', 'warning');
-        }
-      }
+      // SAMIP REGMI
+      // REMOVE DUPLICATE MARKCOMPLETION, COMPLETION MARKING IS BEING HANDLED IN BACKEND
+      // if (type === 'SEND' && formData.payment_plan_id) {
+      //   try {
+      //     await paymentPlanService.markCompleted(Number(formData.payment_plan_id));
+      //   } catch {
+      //     showNotification('Money was sent, but the selected plan could not be marked completed automatically.', 'warning');
+      //   }
+      // }
 
       setSuccessMsg(`${type === 'SEND' ? 'Sent' : 'Requested'} NPR ${formData.amount} to ${formData.target_email}`);
       setShowSuccess(true);

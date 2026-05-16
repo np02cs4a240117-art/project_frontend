@@ -92,14 +92,16 @@ const TransactionsPage = () => {
       }
 
       await transactionService.createTransaction(payload);
+      // SAMIP REGMI
+      // REMOVE DUPLICATE MARKCOMPLETION
 
-      if (formData.transaction_type === 'SEND' && formData.payment_plan_id) {
-        try {
-          await paymentPlanService.markCompleted(Number(formData.payment_plan_id));
-        } catch {
-          showNotification('Money was sent, but the selected plan could not be marked completed automatically.', 'warning');
-        }
-      }
+      // if (formData.transaction_type === 'SEND' && formData.payment_plan_id) {
+      //   try {
+      //     await paymentPlanService.markCompleted(Number(formData.payment_plan_id));
+      //   } catch {
+      //     showNotification('Money was sent, but the selected plan could not be marked completed automatically.', 'warning');
+      //   }
+      // }
 
       setSuccessMsg(`${formData.transaction_type === 'SEND' ? 'Sent' : 'Requested'} NPR ${formData.amount} to ${formData.target_email}`);
       setShowSuccess(true);

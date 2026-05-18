@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import ExpenseForm from '../components/ExpenseForm';
 import TransactionForm from '../components/TransactionForm';
 import { paymentPlanService } from '../services/paymentplan.service';
-import { PlusCircle, Send, ArrowDownLeft, Calendar, FileText, CreditCard, X, TrendingUp, PiggyBank, PieChart, Target } from 'lucide-react';
+import { PlusCircle, Send, ArrowDownLeft, Calendar, FileText, CreditCard, X, TrendingUp, PiggyBank, PieChart, Target, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -165,6 +165,10 @@ const Dashboard = () => {
           <div className="service-item" onClick={() => navigate('/payment-plans')}>
             <div className="icon-box"><Target size={24} /></div>
             <span>All Plans</span>
+          </div>
+          <div className="service-item" onClick={() => navigate('/ncell')}>
+            <div className="icon-box"><Smartphone size={24} /></div>
+            <span>Ncell Packs</span>
           </div>
         </div>
       </div>

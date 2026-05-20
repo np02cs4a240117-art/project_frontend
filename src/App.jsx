@@ -12,6 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import SavingsPage from './pages/SavingsPage';
 import BudgetPage from './pages/BudgetPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import NcellPage from './pages/NcellPage';
 import Loading from './components/Loading';
 
 const ProtectedRoute = ({ children }) => {
@@ -41,6 +42,7 @@ function AppContent() {
         <Route path="/savings" element={<ProtectedRoute><SavingsPage /></ProtectedRoute>} />
         <Route path="/budget" element={<ProtectedRoute><BudgetPage /></ProtectedRoute>} />
         <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
+        <Route path="/ncell" element={<ProtectedRoute><NcellPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       </Routes>
     </Router>

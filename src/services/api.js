@@ -21,6 +21,22 @@ const notifyError = (message) => {
   }
 };
 
+const getFirstErrorMessage = (data) => {
+  if (!data) return null;
+  if (typeof data === 'string') return data;
+  if (data.detail && typeof data.detail === 'string') return data.detail;
+  if (data.errors && typeof data.errors === 'string') return data.errors;
+
+  const firstValue = Object.values(data).find((value) => value !== undefined && value !== null);
+  if (Array.isArray(firstValue) && firstValue.length > 0) {
+    return String(firstValue[0]);
+  }
+  if (typeof firstValue === 'string') {
+    return firstValue;
+  }
+  return null;
+};
+
 // Request interceptor for adding JWT token
 api.interceptors.request.use(
   (config) => {
@@ -80,9 +96,10 @@ api.interceptors.response.use(
       switch (status) {
         case 400:
           // Often validation errors, but can be specific business logic
-          if (data.non_field_errors) notifyError(data.non_field_errors[0]);
-          else if (typeof data === 'string') notifyError(data);
-          else if (data.detail) notifyError(data.detail);
+          {
+            const message = getFirstErrorMessage(data);
+            if (message) notifyError(message);
+          }
           break;
         case 403:
           // Check for specific "Insufficient Balance" message if sent by backend
@@ -95,7 +112,10 @@ api.interceptors.response.use(
           notifyError('Server error. Please try again later.');
           break;
         default:
-          if (data.detail) notifyError(data.detail);
+          {
+            const message = getFirstErrorMessage(data);
+            if (message) notifyError(message);
+          }
       }
     } else if (error.request) {
       notifyError('No response from server. Check your internet connection.');

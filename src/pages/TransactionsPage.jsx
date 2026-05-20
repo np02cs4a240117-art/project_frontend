@@ -158,6 +158,7 @@ const TransactionsPage = () => {
   const matchesCurrentUser = (name) => userNameCandidates.includes(String(name || '').trim().toLowerCase());
   const isIncomingPendingRequest = (tx) => tx.status === 'PENDING' && tx.transaction_type === 'REQUEST' && matchesCurrentUser(tx.target_name);
   const isOutgoingPendingRequest = (tx) => tx.status === 'PENDING' && tx.transaction_type === 'REQUEST' && matchesCurrentUser(tx.initiator_name);
+  const getTransactionCounterparty = (tx) => tx.service_label || (matchesCurrentUser(tx.initiator_name) ? tx.target_name : tx.initiator_name);
 
   const activeTransactionFilterCount = ['status', 'type'].filter((key) => Boolean(filters[key])).length;
 
@@ -242,7 +243,7 @@ const TransactionsPage = () => {
                     </div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{matchesCurrentUser(tx.initiator_name) ? tx.target_name : tx.initiator_name}</div>
+                    <div style={{ fontWeight: 600 }}>{getTransactionCounterparty(tx)}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{new Date(tx.created_at).toLocaleString()}</div>
                   </td>
                   <td><span className="badge" style={{ background: tx.transaction_type === 'SEND' ? 'rgba(45, 149, 150, 0.1)' : 'rgba(154, 208, 194, 0.1)', color: 'var(--primary)' }}>{tx.transaction_type}</span></td>
@@ -336,7 +337,7 @@ const TransactionsPage = () => {
               <div className="transaction-detail-item"><span>Status</span><strong>{selectedTransaction.status}</strong></div>
               <div className="transaction-detail-item"><span>Type</span><strong>{selectedTransaction.transaction_type}</strong></div>
               <div className="transaction-detail-item"><span>From</span><strong>{selectedTransaction.initiator_name}</strong></div>
-              <div className="transaction-detail-item"><span>To</span><strong>{selectedTransaction.target_name}</strong></div>
+              <div className="transaction-detail-item"><span>To</span><strong>{selectedTransaction.service_label || selectedTransaction.target_name}</strong></div>
               <div className="transaction-detail-item"><span>Amount</span><strong>NPR {selectedTransaction.amount}</strong></div>
               <div className="transaction-detail-item full"><span>Description</span><strong>{selectedTransaction.description || 'No note added'}</strong></div>
               <div className="transaction-detail-item full"><span>Created</span><strong>{new Date(selectedTransaction.created_at).toLocaleString()}</strong></div>

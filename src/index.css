@@ -1115,6 +1115,126 @@ input, select, textarea {
   grid-column: 1 / -1;
 }
 
+.ncell-hero-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 214, 10, 0.18), transparent 34%),
+    linear-gradient(135deg, #0f6a6d 0%, #2d959e 100%);
+  color: white;
+}
+
+.ncell-hero-card h3,
+.ncell-hero-card p {
+  color: white;
+}
+
+.ncell-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.ncell-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  opacity: 0.78;
+  margin-bottom: 10px;
+}
+
+.ncell-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-weight: 700;
+}
+
+.ncell-balance-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(45, 149, 158, 0.08);
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.ncell-form-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.ncell-action-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ncell-pack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.ncell-pack-card {
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(45, 149, 158, 0.02), rgba(45, 149, 158, 0.08));
+  display: grid;
+  gap: 6px;
+  text-align: left;
+}
+
+.ncell-pack-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-light);
+}
+
+.ncell-pack-card.active {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  box-shadow: var(--shadow-primary);
+}
+
+.ncell-pack-card.active strong,
+.ncell-pack-card.active small,
+.ncell-pack-card.active .ncell-pack-price {
+  color: white;
+}
+
+.ncell-pack-price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.ncell-pack-card small {
+  color: var(--text-muted);
+  word-break: break-word;
+}
+
+.ncell-status-box {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(45, 149, 158, 0.06);
+  display: grid;
+  gap: 12px;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
 .section-title h2 {
   font-size: 1.8rem;
 }
@@ -1588,6 +1708,14 @@ tr:last-child td {
 
   .transaction-detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ncell-hero-top {
+    flex-direction: column;
+  }
+
+  .ncell-action-row .btn {
+    width: 100%;
   }
 }
 

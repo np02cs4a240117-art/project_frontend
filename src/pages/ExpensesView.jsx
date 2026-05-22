@@ -7,6 +7,13 @@ import { useAuth } from '../context/AuthContext';
 import { Plus, Filter, Search, ChevronLeft, ChevronRight, Trash2, Edit3, FileText } from 'lucide-react';
 import { exportExpensesToPDF } from '../utils/pdfExport';
 
+const LOCKED_TRANSFER_CATEGORIES = new Set([
+  'transfer sent',
+  'transfer received',
+  'request paid',
+  'request received',
+]);
+
 const ExpensesView = () => {
   const { user } = useAuth();
   const { showNotification } = useNotification();
@@ -128,6 +135,8 @@ const ExpensesView = () => {
     .filter((key) => Boolean(filters[key]))
     .length;
 
+  const isLockedTransferExpense = (item) => LOCKED_TRANSFER_CATEGORIES.has(String(item.category || '').trim().replace(/\s+/g, ' ').toLowerCase());
+
   return (
     <Layout>
       <div className="section-title">
@@ -246,8 +255,14 @@ const ExpensesView = () => {
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                      <button className="btn" style={{ padding: '6px', background: 'none', color: 'var(--text-muted)' }} onClick={() => handleEdit(item.id)}><Edit3 size={18} /></button>
-                      <button className="btn" style={{ padding: '6px', background: 'none', color: 'var(--error)' }} onClick={() => handleDelete(item.id)}><Trash2 size={18} /></button>
+                      {!isLockedTransferExpense(item) ? (
+                        <>
+                          <button className="btn" style={{ padding: '6px', background: 'none', color: 'var(--text-muted)' }} onClick={() => handleEdit(item.id)}><Edit3 size={18} /></button>
+                          <button className="btn" style={{ padding: '6px', background: 'none', color: 'var(--error)' }} onClick={() => handleDelete(item.id)}><Trash2 size={18} /></button>
+                        </>
+                      ) : (
+                        <span style={{ color: 'var(--text-light)', fontSize: '0.82rem', fontWeight: 600 }}>Locked</span>
+                      )}
                     </div>
                   </td>
                 </tr>

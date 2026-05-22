@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, FileText, ArrowLeftRight, Target, BarChart2, User as UserIcon } from 'lucide-react';
+import { Home, FileText, ArrowLeftRight, Target, BarChart2, Menu } from 'lucide-react';
 import QRMenu from './QRMenu';
 
 const Layout = ({ children }) => {
@@ -12,7 +12,6 @@ const Layout = ({ children }) => {
       <main className="content-container page-transition">
         {children}
       </main>
-
 
       <nav className="bottom-nav">
         <NavLink to="/" className={({ isActive }) => `nav-btn ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>
@@ -33,8 +32,8 @@ const Layout = ({ children }) => {
         </NavLink>
 
         <NavLink to="/profile" className={({ isActive }) => `nav-btn ${isActive ? 'active' : ''}`} style={{ textDecoration: 'none' }}>
-          <UserIcon size={24} />
-          <span>Profile</span>
+          <Menu size={24} />
+          <span>Menu</span>
         </NavLink>
       </nav>
     </div>

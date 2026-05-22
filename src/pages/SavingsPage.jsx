@@ -7,14 +7,17 @@ import { useNotification } from '../context/NotificationContext';
 import { PiggyBank, Plus, Target, Calendar, Trash2, Edit2, TrendingUp, FileText } from 'lucide-react';
 import { exportSavingsToPDF } from '../utils/pdfExport';
 
+const EMPTY_FORM = { title: '', image_file: null, remove_image: false, target_amount: '', current_amount: '', due_date: '' };
+
 const SavingsPage = () => {
   const { user } = useAuth();
   const { showNotification } = useNotification();
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ title: '', target_amount: '', current_amount: '', due_date: '' });
+  const [formData, setFormData] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
 
   const fetchGoals = async () => {
     setLoading(true);
@@ -36,14 +39,25 @@ const SavingsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = new FormData();
+      payload.append('title', formData.title);
+      payload.append('target_amount', formData.target_amount);
+      payload.append('current_amount', formData.current_amount || '0');
+      payload.append('due_date', formData.due_date || '');
+      payload.append('remove_image', formData.remove_image ? 'true' : 'false');
+      if (formData.image_file) {
+        payload.append('image_file', formData.image_file);
+      }
+
       if (editingId) {
-        await savingsService.updateSavingsGoal(editingId, formData);
+        await savingsService.updateSavingsGoal(editingId, payload);
       } else {
-        await savingsService.createSavingsGoal(formData);
+        await savingsService.createSavingsGoal(payload);
       }
       setShowModal(false);
-      setFormData({ title: '', target_amount: '', current_amount: '', due_date: '' });
+      setFormData(EMPTY_FORM);
       setEditingId(null);
+      setImagePreview('');
       fetchGoals();
     } catch (error) {
       showNotification('Failed to save goal', 'error');
@@ -64,12 +78,31 @@ const SavingsPage = () => {
   const openEdit = (goal) => {
     setFormData({
       title: goal.title,
+      image_file: null,
+      remove_image: false,
       target_amount: goal.target_amount,
       current_amount: goal.current_amount,
       due_date: goal.due_date || ''
     });
+    setImagePreview(goal.image || '');
     setEditingId(goal.id);
     setShowModal(true);
+  };
+
+  const handleImageFileChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    setFormData((prev) => ({ ...prev, image_file: file, remove_image: false }));
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      const currentGoal = goals.find((goal) => goal.id === editingId);
+      setImagePreview(currentGoal?.image || '');
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({ ...prev, image_file: null, remove_image: true }));
+    setImagePreview('');
   };
 
   const totalSaved = goals.reduce((acc, goal) => acc + parseFloat(goal.current_amount), 0);
@@ -84,7 +117,7 @@ const SavingsPage = () => {
           <button className="btn btn-secondary" onClick={() => exportSavingsToPDF(goals, user)} disabled={goals.length === 0}>
             <FileText size={20} /> Export PDF
           </button>
-          <button className="btn btn-primary" onClick={() => { setEditingId(null); setFormData({ title: '', target_amount: '', current_amount: '', due_date: '' }); setShowModal(true); }}>
+          <button className="btn btn-primary" onClick={() => { setEditingId(null); setFormData(EMPTY_FORM); setImagePreview(''); setShowModal(true); }}>
             <Plus size={20} /> Create Goal
           </button>
         </div>
@@ -115,6 +148,23 @@ const SavingsPage = () => {
           </div>
         ) : goals.map((goal) => (
           <div key={goal.id} className="card goal-card">
+            <div className="savings-visual-shell">
+              {goal.image ? (
+                <>
+                  <img src={goal.image} alt={goal.title} className="savings-goal-image savings-goal-image-muted" />
+                  <div className="savings-progress-clip" style={{ width: `${goal.progress_percentage}%` }}>
+                    <img src={goal.image} alt={goal.title} className="savings-goal-image savings-goal-image-active" />
+                  </div>
+                  <div className="savings-progress-stamp">{goal.progress_percentage}%</div>
+                </>
+              ) : (
+                <div className="savings-image-fallback">
+                  <PiggyBank size={34} />
+                  <span>{goal.progress_percentage}%</span>
+                </div>
+              )}
+            </div>
+
             <div className="goal-meta-row">
               <div>
                 <h4 style={{ fontSize: '1.2rem', marginBottom: '4px' }}>{goal.title}</h4>
@@ -163,6 +213,26 @@ const SavingsPage = () => {
                   <input type="text" className="input-field" placeholder="e.g. New Laptop" style={{ paddingLeft: '44px' }} value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
                 </div>
               </div>
+              <div className="form-group">
+                <label>Upload Image (Optional)</label>
+                <label className="savings-upload-field">
+                  <input type="file" accept="image/*" className="savings-upload-input" onChange={handleImageFileChange} />
+                  <span className="savings-upload-button">Choose Image</span>
+                  <span className="savings-upload-name">{formData.image_file?.name || (imagePreview ? 'Current image attached' : 'No image selected')}</span>
+                </label>
+              </div>
+              {imagePreview && (
+                <div className="savings-preview-card">
+                  <img src={imagePreview} alt="Savings preview" className="savings-preview-image" />
+                </div>
+              )}
+              {imagePreview && (
+                <div className="form-group">
+                  <button type="button" className="btn btn-secondary savings-remove-image-btn" onClick={handleRemoveImage}>
+                    Remove Image
+                  </button>
+                </div>
+              )}
               <div className="form-grid-2">
                 <div className="form-group">
                   <label>Target Amount</label>

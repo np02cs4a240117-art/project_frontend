@@ -7,11 +7,13 @@ import { useAuth } from '../context/AuthContext';
 import { Plus, Filter, Search, ChevronLeft, ChevronRight, Trash2, Edit3, FileText } from 'lucide-react';
 import { exportExpensesToPDF } from '../utils/pdfExport';
 
-const LOCKED_TRANSFER_CATEGORIES = new Set([
+const LOCKED_SYSTEM_CATEGORIES = new Set([
   'transfer sent',
   'transfer received',
   'request paid',
   'request received',
+  'ncell datapack',
+  'nepal telecom',
 ]);
 
 const ExpensesView = () => {
@@ -135,7 +137,7 @@ const ExpensesView = () => {
     .filter((key) => Boolean(filters[key]))
     .length;
 
-  const isLockedTransferExpense = (item) => LOCKED_TRANSFER_CATEGORIES.has(String(item.category || '').trim().replace(/\s+/g, ' ').toLowerCase());
+  const isLockedTransferExpense = (item) => LOCKED_SYSTEM_CATEGORIES.has(String(item.category || '').trim().replace(/\s+/g, ' ').toLowerCase());
 
   return (
     <Layout>

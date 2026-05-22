@@ -6,11 +6,19 @@ export const savingsService = {
     return response.data;
   },
   createSavingsGoal: async (data) => {
-    const response = await api.post('/api/savings/', data);
+    const response = await api.post('/api/savings/', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
   updateSavingsGoal: async (id, data) => {
-    const response = await api.patch(`/api/savings/${id}/`, data);
+    const response = await api.patch(`/api/savings/${id}/`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
   deleteSavingsGoal: async (id) => {
